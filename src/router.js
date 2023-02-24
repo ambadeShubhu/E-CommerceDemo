@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -100,9 +100,30 @@ function Home(params) {
   );
 }
 
+const linking = {
+  prefixes: ['skartapp://', 'https://skartapp.com'],
+  config: {
+    // initialRouteName: 'SplashScreen',
+    screens: {
+      Stack: {
+        screens: {
+          HomeScreen: 'HomeScreen',
+          AddToFav: 'AddToFav',
+          Cart: 'Cart',
+          UserPro:'UserPro'
+        },
+      },
+      PlaceOrderScreen: 'PlaceOrderScreen',
+    },
+  }
+};
+
 const Router = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer 
+      linking={linking}
+      fallback={<ActivityIndicator color="blue" size="large" />}
+    >
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="SplashScreen"

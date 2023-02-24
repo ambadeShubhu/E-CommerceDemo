@@ -36,7 +36,7 @@ const Cart = props => {
   const [checkOut, setCheckOut] = useState([]);
 
   useEffect(() => {
-    console.log('cartProductData-->', cartProductData);
+    // console.log('cartProductData-->', cartProductData);
   }, [useIsFocused]);
 
   // console.log('data----->', cartProductData);
@@ -55,9 +55,9 @@ const Cart = props => {
 
   console.log(
     priceData.map((item, index) => {
-      console.log('indexindex------->', item.cartItem.price);
+      // console.log('indexindex------->', item.cartItem.price);
       totalPrice += item.cartItem.price * item.cartItem.qty;
-      grandTotal = totalPrice + 6;
+      grandTotal = Math.round(totalPrice + 6) 
     }),
   );
 
@@ -100,9 +100,9 @@ const Cart = props => {
         ? (subTotal * electronics) / 100
         : (subTotal * clothing) / 100;
 
-    console.log('---taxTotal-------', taxCalculation);
+    // console.log('---taxTotal-------', taxCalculation);
     taxTotal = subTotal + taxCalculation;
-    console.log('---taxTotal------------', taxTotal);
+    // console.log('---taxTotal------------', taxTotal);
 
     return (
       <View style={styles.mainContainer}>

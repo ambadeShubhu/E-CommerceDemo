@@ -26,6 +26,9 @@ import {favItemList, removeFavItemList} from '../redux/action/favorite.action';
 
 import {AnimateMany} from 'react-native-entrance-animation';
 
+import {showNotification, handleScheduledNotification, handleCancelNotification} from '../notifications/notification.android'
+import messaging from "@react-native-firebase/messaging";
+
 const HomeScreen = () => {
   const navigation = useNavigation();
   const favItemData = useSelector(favoriteItemSelector, shallowEqual);
@@ -57,6 +60,61 @@ const HomeScreen = () => {
   });
 
   const cartCount = count.reduce((a, b) => a + b, 0);
+
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+      const fcmToken = await messaging().getToken();
+      console.log("FCM token arrived-->", fcmToken);
+      // setDeviceToken(fcmToken);
+    }
+  }
+
+  useEffect(()=>{
+    requestUserPermission();
+
+      // Assume a message-notification contains a "type" property in the data payload of the screen to open
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        console.log(
+          'Notification caused app to open from background state:',
+          remoteMessage.notification,
+        );
+        // navigation.navigate(remoteMessage.data.type);
+      });
+
+      // Check whether an initial notification is available
+        messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          if (remoteMessage) {
+            console.log(
+              'Notification caused app to open from quit state:',
+              remoteMessage.notification,
+            );
+            setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+          }
+          setLoading(false);
+      }); 
+
+      // for foreground notification
+      // messaging().onMessage(remoteMessage => {
+      //   console.log(
+      //     'Notification caused app to open from background state:',
+      //     remoteMessage.notification,
+      //   );
+      //   navigation.navigate(remoteMessage.data.type);
+      // });
+       messaging().onMessage(async remoteMessage => {
+        console.log('A new FCM message arrived!', remoteMessage.notification,);
+      });
+      // return unsubscribe;
+
+  },[])
 
   useEffect(() => {
     setCounter(cartCount);
@@ -98,6 +156,7 @@ const HomeScreen = () => {
             marginHorizontal: gridColumn ? 18 : 10,
           },
         ]}>
+          
         <TouchableOpacity style={{}} onPress={() => modalOpen(item)}>
           <View
             style={[
@@ -252,7 +311,10 @@ const HomeScreen = () => {
   };
 
   return (
-    // <SafeAreaView>
+    <SafeAreaView>
+       <TouchableOpacity onPress={()=> showNotification('hello', 'shubham')}>
+          <Text>get notification</Text>
+        </TouchableOpacity>
     <AnimateMany
       right
       // bottom
@@ -327,7 +389,7 @@ const HomeScreen = () => {
         </>
       )}
     </AnimateMany>
-    // </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
