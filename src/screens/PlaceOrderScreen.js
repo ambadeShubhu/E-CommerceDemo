@@ -11,6 +11,7 @@ import {useRoute} from '@react-navigation/native';
 
 const PlaceOrderScreen = () => {
   const route = useRoute();
+  console.log("route--------- ", route.params);
 
   const [debug, setDebug] = useState('');
 
@@ -40,7 +41,7 @@ const PlaceOrderScreen = () => {
       });
   };
 
-  let items = route.params.orderPlaced;
+  let items = route?.params?.orderPlaced;
   let selectedData;
   const selectedItem = items.filter((item, index) => {
     selectedData = item;

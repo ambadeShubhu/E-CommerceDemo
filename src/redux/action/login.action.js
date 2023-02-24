@@ -23,10 +23,9 @@ export const login = auth => {
       });
       let json = await result.json();
 
-      // console.log('auth----->', json);
+      // console.log('auth----->', json.token);
       if (auth.email == 'johnd' && auth.password == 'm38rmF$') {
-        console.log('logged In------');
-        dispatch({
+       await dispatch({
           type: LOGIN_SUCCESS,
           payload: json.token,
         });

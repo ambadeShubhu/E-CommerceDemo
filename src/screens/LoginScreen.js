@@ -19,22 +19,41 @@ const LoginScreen = ({navigation}) => {
   const token = useSelector(tokenSelector, shallowEqual);
   const [auth, setAuth] = useState({email: 'johnd', password: 'm38rmF$'});
 
+  const loginFunc = async (email, password) => {
+    // try {
+      await fetch('https://fakestoreapi.com/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password,
+        }),
+      }).then(async(res)=>{
+          let json = await res.json();
+          // console.log('res.token-------- ', json.token)
+          if(json.token){
+            dispatch({
+              type: 'LOGIN_SUCCESS',
+              payload: json.token,
+            });
+            navigation.dispatch(StackActions.replace('Stack'))
+          } else {
+            console.log("login failed!");
+          }
+
+      }).catch((e)=>{
+        console.log('error------- ', e);
+      })
+  };
+
   // console.log('token--->', token);
   const onChangeText = (name, value) => {
     setAuth({
       ...auth,
       [name]: value,
     });
-  };
-
-  const onLogin = () => {
-    dispatch(login(auth));
-    if (token) {
-      navigation.dispatch(StackActions.replace('Stack'));
-      // navigation.navigate('Stack');
-    } else {
-      console.log('-->Login Failed');
-    }
   };
 
   return (
@@ -81,7 +100,9 @@ const LoginScreen = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onPress={onLogin}>
+          onPress={() => loginFunc(auth.email, auth.password)}
+          // onPress={()=> handleLogin()}
+          >
           <Text>Login</Text>
         </TouchableOpacity>
       </View>

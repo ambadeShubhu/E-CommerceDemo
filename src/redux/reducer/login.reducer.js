@@ -1,4 +1,4 @@
-import {LOGIN_FAILED, LOGIN_SUCCESS} from '../action/login.action';
+import {LOGIN_FAILED, LOGIN_SUCCESS, IS_LOADING} from '../action/login.action';
 
 const initialState = {
   token: null,
@@ -8,7 +8,7 @@ const initialState = {
 const loginReducer = (state = initialState, {type, payload}) => {
   switch (type) {
     case LOGIN_SUCCESS:
-      // console.log(payload, 'reducer-----');
+      console.log('reducer-----',payload);
       return {...state, token: payload};
     case LOGIN_FAILED:
       return {...state, token: null};
